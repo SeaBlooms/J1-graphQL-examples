@@ -1,7 +1,5 @@
 import requests
 import json
-import csv
-import os.path
 
 
 def const():
@@ -31,31 +29,6 @@ def make_request(method, url, headers, data):
         return r
     else:
         return "method not implemented"
-
-
-def get_assets():
-    # GraphQL query to get alerts
-    query = '''
-            query J1QL($query: String!, $variables: JSON, $cursor: String, $scopeFilters: [JSON!], $flags: QueryV1Flags) {
-          queryV1(query: $query, variables: $variables, cursor: $cursor, scopeFilters: $scopeFilters, flags: $flags) {
-            type
-            data
-            cursor
-          }
-        }
-            '''
-
-    data = {
-        "query": query,
-        "variables": {
-            "query": "FIND (Device | Host)"
-        }
-    }
-
-    headers = make_headers(const()[1], const()[0])
-    r = make_request("POST", "https://graphql.us.jupiterone.io", headers, data)
-    rdict = json.loads(r.content.decode('utf-8'))
-    return rdict
 
 
 def get_integrations():
@@ -90,12 +63,6 @@ def get_integrations():
 
 if __name__ == '__main__':
 
-    # Run GraphQL query to fetch all Device & Host entities from J1
-    # r = get_assets()
-    # print(json.dumps(r, indent=1))
-
+    # Run GraphQL query to fetch all Active Integrations from J1
     r = get_integrations()
     print(json.dumps(r, indent=1))
-
-
-
