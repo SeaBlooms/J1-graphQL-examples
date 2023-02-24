@@ -110,7 +110,7 @@ def create_entity():
 
 
 def get_assets():
-    # GraphQL query to get alerts
+    # GraphQL query to get assets
     query = '''
             query J1QL($query: String!, $variables: JSON, $cursor: String, $scopeFilters: [JSON!], $flags: QueryV1Flags) {
           queryV1(query: $query, variables: $variables, cursor: $cursor, scopeFilters: $scopeFilters, flags: $flags) {
@@ -134,6 +134,31 @@ def get_assets():
     return rdict
 
 
+def get_identities():
+    # GraphQL query to get identities
+    query = '''
+            query J1QL($query: String!, $variables: JSON, $cursor: String, $scopeFilters: [JSON!], $flags: QueryV1Flags) {
+          queryV1(query: $query, variables: $variables, cursor: $cursor, scopeFilters: $scopeFilters, flags: $flags) {
+            type
+            data
+            cursor
+          }
+        }
+            '''
+
+    data = {
+        "query": query,
+        "variables": {
+            "query": "FIND User"
+        }
+    }
+
+    headers = make_headers(const()[1], const()[0])
+    r = make_request("POST", "https://graphql.us.jupiterone.io", headers, data)
+    rdict = json.loads(r.content.decode('utf-8'))
+    return rdict
+
+
 if __name__ == '__main__':
 
     # Execute GraphQL Query
@@ -146,5 +171,9 @@ if __name__ == '__main__':
     # print(json.dumps(r, indent=1))
 
     # Run GraphQL query to fetch all Device & Host entities from J1
-    r = get_assets()
+    # r = get_assets()
+    # print(json.dumps(r, indent=1))
+
+    # Run GraphQL query to fetch all Device & Host entities from J1
+    r = get_identities()
     print(json.dumps(r, indent=1))
